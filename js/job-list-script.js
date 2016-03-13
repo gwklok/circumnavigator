@@ -1,15 +1,17 @@
 function StatusClass(a) {
     switch(a.item.status) {
-        case "Error":
-            return " text-danger";
-        case "Completed":
-            return " text-success";
-        case "Cancelled":
-            return " text-warning";
-        case "Running":
+        case "Initialized":
             return " text-info";
+        case "Running":
+            return " text-primary";
         case "Paused":
             return " text-muted";
+        case "Stopped":
+            return " text-warning";
+        case "Done":
+            return " text-success";
+        case "Failed":
+            return " text-danger";
         default:
             return "";
     };
@@ -31,7 +33,7 @@ var jobs_data = [
     {
         "job_id" : 1,
         "job_name" : "Travelling Sailor",
-        "status" : "Running",
+        "status" : "Initialized",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -39,7 +41,7 @@ var jobs_data = [
     {
         "job_id" : 69,
         "job_name" : "Travelling Sailor",
-        "status" : "Paused",
+        "status" : "Running",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -47,7 +49,7 @@ var jobs_data = [
     {
         "job_id" : 103,
         "job_name" : "Travelling Sailor",
-        "status" : "Running",
+        "status" : "Paused",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -55,7 +57,7 @@ var jobs_data = [
     {
         "job_id" : 456,
         "job_name" : "Travelling Sailor",
-        "status" : "Error",
+        "status" : "Stopped",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -63,7 +65,7 @@ var jobs_data = [
     {
         "job_id" : 678,
         "job_name" : "Travelling Sailor",
-        "status" : "Completed",
+        "status" : "Done",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -71,7 +73,7 @@ var jobs_data = [
     {
         "job_id" : 2348,
         "job_name" : "Travelling Sailor",
-        "status" : "Cancelled",
+        "status" : "Failed",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
