@@ -26,7 +26,6 @@ var jobs_data = [
         "id" : 1,
         "name" : "Travelling Sailor",
         "status" : "Running",
-        "module_url" : "http://google.ca/",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -35,7 +34,6 @@ var jobs_data = [
         "id" : 4,
         "name" : "Travelling Sailor",
         "status" : "Error",
-        "module_url" : "http://google.ca/",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -44,7 +42,6 @@ var jobs_data = [
         "id" : 89,
         "name" : "Travelling Sailor",
         "status" : "Completed",
-        "module_url" : "http://google.ca/",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -53,7 +50,6 @@ var jobs_data = [
         "id" : 1028,
         "name" : "Travelling Sailor",
         "status" : "Error",
-        "module_url" : "http://google.ca/",
         "created_at" : "12:55 12/12/2012",
         "best_energy" : 21344.23,
         "progress" : 55.2
@@ -67,7 +63,6 @@ var jobs_directive = {
             ".pure-job-name" : "job.name",
             ".pure-job-status" : "job.status",
             ".pure-job-status@class+" : StatusClass,
-            ".pure-job-module-url" : "job.module_url",
             ".pure-job-created-at" : "job.created_at",
             ".pure-job-best-energy" : "job.best_energy",
             ".pure-job-progress" : ProgressFormatter,
