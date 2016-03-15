@@ -2,6 +2,10 @@ body {
 	padding-top: 70px;
 }
 
+.full-width {
+	width: 100%;
+}
+
 .pure-job-entry:hover {
 	cursor: pointer;
 }
