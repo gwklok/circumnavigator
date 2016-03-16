@@ -1,7 +1,3 @@
-var SCHEDULER_API_URL = "http://10.144.144.11:4567/api/";
-var REFRESH_TIME = 15000;
-
-/*******************************************************/
 var TableContents = "";
 
 function Initialize() {
