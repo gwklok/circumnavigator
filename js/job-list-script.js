@@ -47,7 +47,7 @@ function StatusClass(a) {
 }
 
 function ProgressFormatter(a) {
-    return (a.item.num_finished_tasks / a.item.num_total_tasks * 100) + "%";
+    return (a.item.num_finished_tasks / a.item.num_total_tasks * 100).toFixed(2) + "%";
 }
 
 function JobDetailsLink(a) {
