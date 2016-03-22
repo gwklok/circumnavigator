@@ -28,16 +28,13 @@ function FormatProgressWidth() {
 function FormatStatusClass() {
     var value = "pure-job-status";
     switch(this.current_state) {
-        case "INITIALIZED":
-            value += " text-info";
-            break;
         case "RUNNING":
             value += " text-primary";
             break;
         case "PAUSED":
-            value += " text-muted";
+            value += " text-info";
             break;
-        case "STOPPED":
+        case "STOP":
             value += " text-warning";
             break;
         case "DONE":
@@ -52,37 +49,67 @@ function FormatStatusClass() {
 
 function FormatProgressClass() {
     var value = "progress-bar pure-progress";
+    var incomplete = "";
     if((this.num_finished_tasks / this.num_total_tasks * 100) < 100) {
-        value += " progress-bar-striped active";
+        incomplete = " progress-bar-striped";
     }
     switch(this.current_state) {
-        case "INITIALIZED":
-            value += " progress-bar-info";
-            break;
         case "RUNNING":
-            value += " progress-bar-primary";
+            value += incomplete + " active";
             break;
         case "PAUSED":
-            value += " progress-bar-muted";
+            value += " progress-bar-info" + incomplete;
             break;
-        case "STOPPED":
-            value += " progress-bar-warning";
+        case "STOP":
+            value += " progress-bar-warning" + incomplete;
             break;
         case "DONE":
             value += " progress-bar-success";
             break;
         case "FAILED":
-            value += " progress-bar-danger";
+            value += " progress-bar-danger" + incomplete;
             break;
     };
     return value;
 }
 
+function SetButtonStates(status) {
+    switch(status) {
+        case "RUNNING":
+            // User can pause or stop job
+            $("#left-action-btn").show();
+            $("#right-action-btn").show();
+            $("#left-action-btn").html("Pause");
+            $("#left-action-btn").attr("class", "btn btn-block btn-info");
+            $("#left-action-btn").click(PauseJobClick);
+            $("#right-action-btn").click(StopJobClick);
+            break;
+        case "PAUSED":
+            // User can resume or stop job
+            $("#left-action-btn").show();
+            $("#right-action-btn").show();
+            $("#left-action-btn").html("Resume");
+            $("#left-action-btn").attr("class", "btn btn-block btn-primary");
+            $("#left-action-btn").click(ResumeJobClick);
+            $("#right-action-btn").click(StopJobClick);
+            break;
+        default:
+        case "INITIALIZED":
+        case "STOP":
+        case "DONE":
+        case "FAILED":
+            // User cannot do anything
+            $("#left-action-btn").hide();
+            $("#right-action-btn").hide();
+            break;
+    };
+}
+
 function LoadJob() {
-    var job_id = parseInt(window.location.hash.substring(1),10);
-    if(!isNaN(job_id)) {
+    JobID = parseInt(window.location.hash.substring(1),10);
+    if(!isNaN(JobID)) {
         $.ajax({
-            url: SCHEDULER_API_URL + "job/" + job_id,
+            url: SCHEDULER_API_URL + "job/" + JobID,
             type: "GET",
             dataType: "json"
         })
@@ -104,16 +131,59 @@ function LoadJob() {
                 ".pure-progress@class" : FormatProgressClass
             };
             $("body").render(data, job_directive);
+            SetButtonStates(data.current_state);
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
-            alert("Error loading job ID(" + job_id + "): " + errorThrown)
+            alert("Error loading job ID(" + JobID + "): " + errorThrown);
+            jobStatus = "FAILED";
         });
     } else {
-        alert("Invalid job ID: " + job_id);
+        alert("Invalid job ID: " + JobID);
     }
 }
+
+function PauseJobClick(event) {
+    $(event.target).prop('disabled', true).addClass("disabled");
+    UpdateJobState("pause", event.target);
+}
+
+function ResumeJobClick(event) {
+    $(event.target).prop('disabled', true).addClass("disabled");
+    UpdateJobState("resume", event.target);
+}
+
+function StopJobClick(event) {
+    $(event.target).prop('disabled', true).addClass("disabled");
+    UpdateJobState("stop", event.target);
+}
+
+function UpdateJobState(state, target) {
+    var data = {
+        "status" : state
+    };
+
+    $.ajax({
+        url: SCHEDULER_API_URL + "job/" + JobID + "/status",
+        type: "PUT",
+        dataType: "json",
+        data: JSON.stringify(data)
+    })
+    .done(function(data, textStatus, jqXHR) {
+        LoadJob();
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        alert("Failed to change state of job (" + JobID + ") to " + state + " : " + errorThrown);
+    })
+    .always(function() {
+        $(target).prop('disabled', false).removeClass("disabled");
+    });
+}
+
+var jobID = -1;
 
 $(document).ready(function() {
     LoadJob();
     setInterval(LoadJob, REFRESH_TIME);
+    $("#left-action-btn").click(PauseJobClick);
+    $("#right-action-btn").click(StopJobClick);
 });

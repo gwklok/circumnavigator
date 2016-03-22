@@ -19,7 +19,9 @@ function RenderJobs(jobs_data) {
                 ".pure-job-created-at" : "job.created_at",
                 ".pure-job-best-energy" : "job.best_energy",
                 ".pure-job-progress" : ProgressFormatter,
-                "@data-url" : JobDetailsLink
+                "@data-url" : JobDetailsLink,
+                ".pure-job-progress@style+" : FormatProgressWidth,
+                ".pure-job-progress@class" : FormatProgressClass
             }
         }
     };
@@ -29,13 +31,11 @@ function RenderJobs(jobs_data) {
 
 function StatusClass(a) {
     switch(a.item.current_state) {
-        case "INITIALIZED":
-            return " text-info";
         case "RUNNING":
             return " text-primary";
         case "PAUSED":
-            return " text-muted";
-        case "STOPPED":
+            return " text-info";
+        case "STOP":
             return " text-warning";
         case "DONE":
             return " text-success";
@@ -54,8 +54,44 @@ function JobDetailsLink(a) {
     return "/job-details.html#" + a.item.job_id;
 }
 
+function FormatProgressClass() {
+    var value = "progress-bar pure-job-progress";
+    var incomplete = "";
+    if((this.num_finished_tasks / this.num_total_tasks * 100) < 100) {
+        incomplete = " progress-bar-striped";
+    }
+    switch(this.current_state) {
+        case "RUNNING":
+            value += incomplete + " active";
+            break;
+        case "PAUSED":
+            value += " progress-bar-info" + incomplete;
+            break;
+        case "STOP":
+            value += " progress-bar-warning" + incomplete;
+            break;
+        case "DONE":
+            value += " progress-bar-success";
+            break;
+        case "FAILED":
+            value += " progress-bar-danger" + incomplete;
+            break;
+    };
+    return value;
+}
+
+function FormatProgressWidth() {
+    return "width:" + (this.num_finished_tasks / this.num_total_tasks * 100).toFixed(2) + "%;";
+}
+
 function OnJobClick(event) {
-    window.location = $(event.target).parent("tr").data("url");
+    var parents = $(event.target).parents();
+    for (var i = parents.length - 1; i >= 0; i--) {
+        if($(parents[i]).data("url")) {
+            window.location = $(parents[i]).data("url");
+            return;
+        }
+    }
 }
 
 function LoadJobs() {
@@ -66,7 +102,7 @@ function LoadJobs() {
     })
     .done(function(data, textStatus, jqXHR) {
         ClearJobs();
-        RenderJobs(data);
+        RenderJobs(data.reverse());
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
         alert("Error loading jobs: " + errorThrown)
