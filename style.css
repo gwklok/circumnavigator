@@ -1,3 +1,8 @@
 body {
 	padding-top: 70px;
 }
+
+pre {
+	white-space: pre-wrap;
+	word-break: normal;
+}
