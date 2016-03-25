@@ -32,50 +32,49 @@
 </nav>
 <div class="container">
     <h1>Create a Magellan Job</h1>
-    <form>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label for="job_name">Job Name</label>
-                    <input type="text" class="form-control" id="job_name" placeholder="Job Name">
-                </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="job_name">Job Name</label>
+                <input type="text" class="form-control" id="job_name" placeholder="Job Name">
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label for="running_time">Running Time in Seconds</label>
-                    <input type="number" class="form-control" id="running_Time" placeholder="Job Running Time in Seconds">
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="running_time">Running Time in Minutes</label>
+                <input type="number" class="form-control" id="running_time" placeholder="Job Running Time in Minutes">
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label for="module_url">Module URL</label>
-                    <input type="url" class="form-control" id="job_name" placeholder="URL to the module to run for the job">
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="module_url">Module URL</label>
+                <input type="text" class="form-control" id="module_url" placeholder="URL to the module to run for the job">
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label for="module_data">Module JSON Data</label>
-                    <textarea id="module_data" class="form-control" placeholder="JSON data to be forwarded to the module" rows="10"></textarea>
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="module_data">Module JSON Data</label>
+                <textarea id="module_data" class="form-control" placeholder="JSON data to be forwarded to the module" rows="10"></textarea>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <button type="submit" class="btn btn-primary btn-block">Initialize Job</button>
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <button id="create-job-btn" class="btn btn-primary btn-block">Create Job</button>
         </div>
-    </form>
+    </div>
 </div>
 <!-- External JavaScript -->
 <script src="//code.jquery.com/jquery-2.2.1.min.js" integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=" crossorigin="anonymous"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="//cdn.rawgit.com/pure/pure/ae7e76b2cad553a5c12e176a4c76d7b07903f8b0/libs/pure.min.js"></script>
 <script src="/js/script.js"></script>
+<script src="/js/create-job-script.js"></script>
 </body>
 </html>

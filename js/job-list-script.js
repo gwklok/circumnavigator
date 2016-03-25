@@ -17,7 +17,7 @@ function RenderJobs(jobs_data) {
                 ".pure-job-status" : "job.current_state",
                 ".pure-job-status@class+" : StatusClass,
                 ".pure-job-created-at" : "job.created_at",
-                ".pure-job-best-energy" : "job.best_energy",
+                ".pure-job-best-energy" : FormatBestEnergy,
                 ".pure-job-progress" : ProgressFormatter,
                 "@data-url" : JobDetailsLink,
                 ".pure-job-progress@style+" : FormatProgressWidth,
@@ -52,6 +52,14 @@ function ProgressFormatter(a) {
 
 function JobDetailsLink(a) {
     return "/job-details.html#" + a.item.job_id;
+}
+
+function FormatBestEnergy(a) {
+    if(a.item.best_energy < VERY_LARGE_NUMBER) {
+        return (a.item.best_energy).toFixed(4);
+    } else {
+        return "No results";
+    }
 }
 
 function FormatProgressClass() {
@@ -96,7 +104,7 @@ function OnJobClick(event) {
 
 function LoadJobs() {
     $.ajax({
-        url: SCHEDULER_API_URL + "jobs",
+        url: SCHEDULER_API_URL() + "jobs",
         type: "GET",
         dataType: "json"
     })
@@ -105,7 +113,8 @@ function LoadJobs() {
         RenderJobs(data.reverse());
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
-        alert("Error loading jobs: " + errorThrown)
+        alert("Error loading jobs, will try next scheduler.\r\n" + errorThrown)
+        NEXT_SCHEDULER_URL();
     });
 }
 

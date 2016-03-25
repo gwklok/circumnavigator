@@ -13,6 +13,14 @@ function FormatBestLocation() {
     return "{}";
 }
 
+function FormatBestEnergy() {
+    if(this.best_energy < VERY_LARGE_NUMBER) {
+        return (this.best_energy).toFixed(4);
+    } else {
+        return "No results";
+    }
+}
+
 function FormatEnergyHistory() {
     return JSON.stringify(this.energy_history);
 }
@@ -109,7 +117,7 @@ function LoadJob() {
     JobID = parseInt(window.location.hash.substring(1),10);
     if(!isNaN(JobID)) {
         $.ajax({
-            url: SCHEDULER_API_URL + "job/" + JobID,
+            url: SCHEDULER_API_URL() + "job/" + JobID,
             type: "GET",
             dataType: "json"
         })
@@ -123,7 +131,7 @@ function LoadJob() {
                 ".pure-module-json" : FormatModuleJsonData,
                 ".pure-best-location" : FormatBestLocation,
                 ".pure-energy-history" : FormatEnergyHistory,
-                ".pure-best-energy" : "best_energy",
+                ".pure-best-energy" : FormatBestEnergy,
                 ".pure-running-tasks" : "num_running_tasks",
                 ".pure-completed-tasks" : "num_finished_tasks",
                 ".pure-progress" : FormatProgress,
@@ -134,8 +142,9 @@ function LoadJob() {
             SetButtonStates(data.current_state);
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
-            alert("Error loading job ID(" + JobID + "): " + errorThrown);
+            alert("Error loading job ID(" + JobID + "), will try next scheduler.\r\n" + errorThrown);
             jobStatus = "FAILED";
+            NEXT_SCHEDULER_URL();
         });
     } else {
         alert("Invalid job ID: " + JobID);
@@ -163,7 +172,7 @@ function UpdateJobState(state, target) {
     };
 
     $.ajax({
-        url: SCHEDULER_API_URL + "job/" + JobID + "/status",
+        url: SCHEDULER_API_URL() + "job/" + JobID + "/status",
         type: "PUT",
         dataType: "json",
         data: JSON.stringify(data)
@@ -172,7 +181,8 @@ function UpdateJobState(state, target) {
         LoadJob();
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
-        alert("Failed to change state of job (" + JobID + ") to " + state + " : " + errorThrown);
+        alert("Failed to change state of job (" + JobID + ") to " + state + ", will try next scheduler.\r\n" + errorThrown);
+        NEXT_SCHEDULER_URL();
     })
     .always(function() {
         $(target).prop('disabled', false).removeClass("disabled");
