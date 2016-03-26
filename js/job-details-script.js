@@ -151,7 +151,6 @@ function LoadJob() {
                 ".pure-best-location" : FormatBestLocation,
                 ".pure-energy-history" : FormatEnergyHistory,
                 ".pure-best-energy" : FormatBestEnergy,
-                ".pure-running-tasks" : "num_running_tasks",
                 ".pure-completed-tasks" : "num_finished_tasks",
                 ".pure-progress" : FormatProgress,
                 ".pure-progress@style+" : FormatProgressWidth,
@@ -163,6 +162,7 @@ function LoadJob() {
         .fail(function(jqXHR, textStatus, errorThrown) {
             jobStatus = "FAILED";
             NEXT_SCHEDULER_URL();
+            sleep(100);
             LoadJob();
         });
     } else {
@@ -203,6 +203,7 @@ function UpdateJobState(state, target) {
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
         NEXT_SCHEDULER_URL();
+        sleep(100);
         UpdateJobState(state, target);
     });
 }

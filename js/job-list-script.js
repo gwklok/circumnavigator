@@ -132,6 +132,7 @@ function LoadJobs() {
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
         NEXT_SCHEDULER_URL();
+        sleep(100);
         LoadJobs();
     });
 }
