@@ -55,6 +55,23 @@ function FormatStatusClass() {
     return value;
 }
 
+function FormatCreatedTime() {
+    var date = new Date(this.job_starting_time);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var mins = date.getMinutes();
+    var secs = date.getSeconds();
+
+    if(month < 10) month = "0" + month;
+    if(day < 10) day = "0" + day;
+    if(mins < 10) mins = "0" + mins;
+    if(secs < 10) secs = "0" + secs;
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + mins + ":" + secs;
+}
+
 function FormatProgressClass() {
     var value = "progress-bar pure-progress";
     var incomplete = "";
@@ -122,11 +139,13 @@ function LoadJob() {
             dataType: "json"
         })
         .done(function(data, textStatus, jqXHR) {
+            RESET_FAILED_ATTEMPTS();
             var job_directive = {
                 ".pure-job-id-name" : FormatJobIdName,
                 ".pure-job-status" : "current_state",
                 ".pure-job-status@class" : FormatStatusClass,
                 ".pure-running-time" : "task_seconds",
+                ".pure-created-time" : FormatCreatedTime,
                 ".pure-module-url" : "task_name",
                 ".pure-module-json" : FormatModuleJsonData,
                 ".pure-best-location" : FormatBestLocation,
@@ -142,9 +161,9 @@ function LoadJob() {
             SetButtonStates(data.current_state);
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
-            alert("Error loading job ID(" + JobID + "), will try next scheduler.\r\n" + errorThrown);
             jobStatus = "FAILED";
             NEXT_SCHEDULER_URL();
+            LoadJob();
         });
     } else {
         alert("Invalid job ID: " + JobID);
@@ -178,14 +197,13 @@ function UpdateJobState(state, target) {
         data: JSON.stringify(data)
     })
     .done(function(data, textStatus, jqXHR) {
+        RESET_FAILED_ATTEMPTS();
+        $(target).prop('disabled', false).removeClass("disabled");
         LoadJob();
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
-        alert("Failed to change state of job (" + JobID + ") to " + state + ", will try next scheduler.\r\n" + errorThrown);
         NEXT_SCHEDULER_URL();
-    })
-    .always(function() {
-        $(target).prop('disabled', false).removeClass("disabled");
+        UpdateJobState(state, target);
     });
 }
 

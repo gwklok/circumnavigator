@@ -60,6 +60,7 @@ function CreateJob(target) {
         data: JSON.stringify(data)
     })
     .done(function(data, textStatus, jqXHR) {
+        RESET_FAILED_ATTEMPTS();
         window.location = "/job-details.html#" + data.job_id;
     })
     .fail(function(jqXHR, textStatus, errorThrown) {

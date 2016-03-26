@@ -16,7 +16,7 @@ function RenderJobs(jobs_data) {
                 ".pure-job-name" : "job.job_name",
                 ".pure-job-status" : "job.current_state",
                 ".pure-job-status@class+" : StatusClass,
-                ".pure-job-created-at" : "job.created_at",
+                ".pure-job-created-at" : FormatCreatedTime,
                 ".pure-job-best-energy" : FormatBestEnergy,
                 ".pure-job-progress" : ProgressFormatter,
                 "@data-url" : JobDetailsLink,
@@ -60,6 +60,23 @@ function FormatBestEnergy(a) {
     } else {
         return "No results";
     }
+}
+
+function FormatCreatedTime(a) {
+    var date = new Date(a.item.job_starting_time);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var mins = date.getMinutes();
+    var secs = date.getSeconds();
+
+    if(month < 10) month = "0" + month;
+    if(day < 10) day = "0" + day;
+    if(mins < 10) mins = "0" + mins;
+    if(secs < 10) secs = "0" + secs;
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + mins + ":" + secs;
 }
 
 function FormatProgressClass() {
@@ -109,12 +126,13 @@ function LoadJobs() {
         dataType: "json"
     })
     .done(function(data, textStatus, jqXHR) {
+        RESET_FAILED_ATTEMPTS();
         ClearJobs();
         RenderJobs(data.reverse());
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
-        alert("Error loading jobs, will try next scheduler.\r\n" + errorThrown)
         NEXT_SCHEDULER_URL();
+        LoadJobs();
     });
 }
 
