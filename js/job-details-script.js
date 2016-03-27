@@ -72,6 +72,10 @@ function FormatCreatedTime() {
     return year + "-" + month + "-" + day + " " + hour + ":" + mins + ":" + secs;
 }
 
+function FormatRunningTime() {
+    return (this.task_seconds / 60).toFixed(0);
+}
+
 function FormatProgressClass() {
     var value = "progress-bar pure-progress";
     var incomplete = "";
@@ -144,7 +148,7 @@ function LoadJob() {
                 ".pure-job-id-name" : FormatJobIdName,
                 ".pure-job-status" : "current_state",
                 ".pure-job-status@class" : FormatStatusClass,
-                ".pure-running-time" : "task_seconds",
+                ".pure-running-time" : FormatRunningTime,
                 ".pure-created-time" : FormatCreatedTime,
                 ".pure-module-url" : "task_name",
                 ".pure-module-json" : FormatModuleJsonData,
