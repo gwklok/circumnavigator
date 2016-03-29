@@ -105,21 +105,9 @@ function FormatProgressClass() {
 function SetButtonStates(status) {
     switch(status) {
         case "RUNNING":
-            // User can pause or stop job
-            $("#left-action-btn").show();
-            $("#right-action-btn").show();
-            $("#left-action-btn").html("Pause");
-            $("#left-action-btn").attr("class", "btn btn-block btn-info");
-            $("#left-action-btn").click(PauseJobClick);
-            $("#right-action-btn").click(StopJobClick);
-            break;
         case "PAUSED":
-            // User can resume or stop job
-            $("#left-action-btn").show();
+            // User can pause or stop job
             $("#right-action-btn").show();
-            $("#left-action-btn").html("Resume");
-            $("#left-action-btn").attr("class", "btn btn-block btn-primary");
-            $("#left-action-btn").click(ResumeJobClick);
             $("#right-action-btn").click(StopJobClick);
             break;
         default:
@@ -128,7 +116,6 @@ function SetButtonStates(status) {
         case "DONE":
         case "FAILED":
             // User cannot do anything
-            $("#left-action-btn").hide();
             $("#right-action-btn").hide();
             break;
     };
@@ -172,16 +159,6 @@ function LoadJob() {
     } else {
         alert("Invalid job ID: " + JobID);
     }
-}
-
-function PauseJobClick(event) {
-    $(event.target).prop('disabled', true).addClass("disabled");
-    UpdateJobState("pause", event.target);
-}
-
-function ResumeJobClick(event) {
-    $(event.target).prop('disabled', true).addClass("disabled");
-    UpdateJobState("resume", event.target);
 }
 
 function StopJobClick(event) {
